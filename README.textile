@@ -1,0 +1,102 @@
+h1. Arabesque
+
+Arabesque, is a mail box (Queue) written in ruby with a backup from the super hero BerkeleyD. Arabesque tries to solve some of the existing solutions for applications written in ruby as:
+
+    * Scaling to Mutliple CPUs
+    * Garbage Collection
+    * Performance and Reliability of Messaging Systems
+    * And of course, Its not about the language, we can do great things with Ruby !! ;)
+
+
+
+h2. Download
+
+Download Arabesque at:
+
+<pre>
+   git://github.com/espace/arabesque.git
+</pre>
+
+h2. Installation
+
+
+You can check out the latest source from git:
+
+<pre>
+   git clone git://github.com/espace/arabesque.git
+</pre>
+
+h2. Sample Usage
+
+Please First, Download <a href="http://www.oracle.com/technology/products/berkeley-db/index.html">BerkeleyDB</a> and its <a href="http://github.com/espace/bdb/">ruby-wrapper</a>.
+
+h3. Usage as a Library
+Just Include the queues_manager file into your application, add queues to it, write to queues and read from queues.
+
+
+Pros
+Very fast
+Much easier to setup and use
+Less moving parts
+
+Cons
+Does not scale to multiple physical servers
+If you do that you lose ordering (might not be an issue)
+
+<pre>
+  require 'queues_manager.rb'
+  # Creating the Manager
+  @queues_manager = Arabesque::QueuesManager.new("data_folder_path")
+
+  # Adding a Queue
+  @queues_manager.add_queue('queue_name') 
+
+  # Pushig to Queue
+  @queues_manager.push_to_queue('queue_name','message')
+
+  # Poping from Queue
+  @queues_manager.pop_from_queue('queue_name')  
+</pre>
+
+h3. Usage as a server
+Currently, We are using a simple sinatra server for processing, later Arabesque will have its own solid server implementation.
+
+Pros
+Allows multiple front end servers to use the same queue
+Allows the queue to scale up or scale out independently from the front end
+
+Cons
+More moving parts
+Added latencies of TCP/HTTP communication overhead
+Loses strict queue ordering in scale out scenarios
+
+
+Running the Server 
+  ruby arabesque-server.rb
+
+
+Adding A queue
+  curl http://SERVER_URL/queues -d "name=queue_name"  (POST Request)
+
+Pushing to Queue
+  curl http://SERVER_URL/queues/queue_name/ -d "message=my_message"  (POST Request)
+
+Poping from Queue
+  curl http://SERVER_URL/queues/queue_name/ (GET Request)
+
+
+h2. Numbers
+
+These numbers are recorded on a machine wih AMD Turion X2 ultra 64-bit 2.00 GHZ Processor, 4 GB RAM, 5400 RPM Hard drive 
+
+Single Arabesque Process ( 1K message size)  5600.94 request/sec
+
+Dual Arabesque Process (1K message size)  8577.74 request/sec
+
+h2. Notes 
+
+Arabesque is in the early begining, Testing enhancing server implementation are the first priorities now, sure contributions and reporting bugs are welcomed. More benchmarks will be avaliable soon.
+
+
+
+Contribution By <a href="http://www.espace.com.eg">eSpace</a>.

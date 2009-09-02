@@ -1,0 +1,2 @@
+queues-per-file: 100
+data_folder: twittercast_data/
